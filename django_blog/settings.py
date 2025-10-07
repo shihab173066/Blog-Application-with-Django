@@ -25,8 +25,16 @@ SECRET_KEY = 'django-insecure--o(ehbc(sjuw24vxps4y_yqh1a5#o3+ig=23z0qu%$ed=ug%e@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '.onrender.com'
+    '127.0.0.1', 
+    'localhost'
+]
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'https://todoapp-wego.onrender.com',
+]
 
 # Application definition
 

@@ -5,11 +5,36 @@ from .models import Post
 from django.contrib.auth import authenticate, login, logout
 
 
-def home(request):
-    return render(request, 'blog/home.html')
 
-# Create your views here.
-def login(request):
+
+def signup(request):
+    if request.method == 'POST':
+        name = request.POST.get('uname')
+        email = request.POST.get('uemail')
+        password = request.POST.get('upassword')
+
+        # ✅ Check if username already exists
+        if User.objects.filter(username=name).exists():
+            # messages.error(request, 'Username already exists. Please choose a different one.')
+            return redirect('/signup')
+
+        # ✅ Check if email already exists
+        if User.objects.filter(email=email).exists():
+            # messages.error(request, 'Email is already registered. Please use another one.')
+            return redirect('/signup')
+
+        # ✅ Create the user if both are unique
+        newUser = User.objects.create_user(username=name, email=email, password=password)
+        newUser.save()
+        # messages.success(request, 'Account created successfully! Please log in.')
+        return redirect('/loginView')
+
+    return render(request, 'blog/signup.html')
+
+
+
+
+def loginView(request):
     if request.method == 'POST':
         name = request.POST.get('uname')
         password = request.POST.get('upassword')
@@ -18,6 +43,42 @@ def login(request):
             login(request, userr)
             return redirect('/home')
         else:
-            return redirect('/login')
+            return redirect('/loginView')
 
-    return render(request, 'blog/login.html')
+    return render(request, 'blog/loginView.html')
+
+
+
+
+def home(request):
+    context = {
+        'posts': Post.objects.all()
+    }
+    return render(request, 'blog/home.html', context)
+
+
+
+def newPost(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        npost = models.Post(title=title, content=content, author=request.user)
+        npost.save()
+        return redirect('/home')
+    
+    return render(request, 'blog/newpost.html')
+
+
+
+
+def myPost(request):
+    context = {
+        'posts': Post.objects.filter(author= request.user)
+    }
+    return render(request, 'blog/mypost.html', context)
+
+
+
+def signout(request):
+    logout(request)
+    return redirect('/loginView')
