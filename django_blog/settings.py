@@ -33,7 +33,7 @@ ALLOWED_HOSTS = [
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
-    'https://todoapp-wego.onrender.com',
+    'https://blog-application-with-django.onrender.com',
 ]
 
 # Application definition
